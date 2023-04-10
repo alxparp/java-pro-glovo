@@ -26,4 +26,9 @@ public class OrderController {
         return orderService.getAllOrders();
     }
 
+    @PostMapping
+    public void saveOrder(@RequestBody Order order) {
+        orderService.saveOrder(order);
+    }
+
 }

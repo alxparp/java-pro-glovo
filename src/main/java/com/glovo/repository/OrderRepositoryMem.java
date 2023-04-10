@@ -2,6 +2,7 @@ package com.glovo.repository;
 
 import com.glovo.model.Order;
 import com.glovo.model.Product;
+import com.glovo.repository.dao.OrderDao;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -10,8 +11,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
-@Repository
-public class OrderRepository implements OrderDao {
+@Repository("orderRepoMem")
+public class OrderRepositoryMem implements OrderDao {
 
     private final List<Product> products1 = List.of(
             new Product(1, "Burger", 100),
@@ -22,7 +23,7 @@ public class OrderRepository implements OrderDao {
             new Product(5, "Cake", 40)
     );
 
-    private final List<Order> DB = List.of(
+    private List<Order> DB = List.of(
             new Order(1, LocalDate.now(), 240.5, products1),
             new Order(2, LocalDate.now(), 80, products2));
 
@@ -39,9 +40,29 @@ public class OrderRepository implements OrderDao {
     }
 
     @Override
-    public void save(Order order) {
+    public Integer save(Order order) {
         int randomNum = ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE);
         Order newOrder = new Order(randomNum, order.getDate(), order.getCost(), new ArrayList<>(order.getProducts()));
         DB.add(newOrder);
+        return randomNum;
+    }
+
+    @Override
+    public void update(Order order) {
+        if (order == null) return;
+        for (Order tempOrder : DB) {
+            int index = DB.indexOf(tempOrder);
+            if (index >= 0) {
+                DB.set(index, new Order(tempOrder.getId(),order.getDate(), order.getCost(), order.getProducts()));
+                return;
+            }
+        }
+
+
+    }
+
+    @Override
+    public void delete(Order order) {
+        DB.remove(order);
     }
 }

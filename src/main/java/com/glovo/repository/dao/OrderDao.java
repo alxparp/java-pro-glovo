@@ -1,4 +1,4 @@
-package com.glovo.repository;
+package com.glovo.repository.dao;
 
 import com.glovo.model.Order;
 
@@ -9,6 +9,8 @@ public interface OrderDao {
 
     Optional<Order> getById(int id);
     List<Order> getAllOrders();
-    void save(Order order);
+    Integer save(Order order);
+    void update(Order order);
+    void delete(Order order);
 
 }
