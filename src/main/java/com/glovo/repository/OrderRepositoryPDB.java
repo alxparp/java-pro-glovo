@@ -28,12 +28,19 @@ public class OrderRepositoryPDB implements OrderDao {
 
     @Override
     public Optional<Order> getById(int id) {
-        Order order = jdbcTemplate.queryForObject(OrderQuery.GET_ORDER_BY_ID.getValue(), new OrderRowMapper(), id);
-        if (order != null) {
-            List<Product> products = jdbcTemplate.query(ProductQuery.GET_PRODUCT_BY_ORDER.getValue(), new ProductRowMapper(), order.getId());
-            order.setProducts(products);
-        }
-        return Optional.ofNullable(order);
+        return jdbcTemplate.query(
+                        OrderQuery.GET_ORDER_BY_ID.getValue(),
+                        new OrderRowMapper(),
+                        id)
+                .stream()
+                .findAny()
+                .map(o -> {
+                    o.setProducts(jdbcTemplate.query(
+                            ProductQuery.GET_PRODUCT_BY_ORDER.getValue(),
+                            new ProductRowMapper(),
+                            o.getId()));
+                    return o;
+                });
     }
 
     @Override

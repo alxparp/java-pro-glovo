@@ -23,37 +23,37 @@ public class OrderRepositoryMem implements OrderDao {
             new Product(5, "Cake", 40)
     );
 
-    private List<Order> DB = List.of(
+    private List<Order> orders = List.of(
             new Order(1, LocalDate.now(), 240.5, products1),
             new Order(2, LocalDate.now(), 80, products2));
 
     @Override
     public Optional<Order> getById(int id) {
-        return DB.stream()
+        return orders.stream()
                 .filter(o -> o.getId() == id)
                 .findFirst();
     }
 
     @Override
     public List<Order> getAllOrders() {
-        return DB;
+        return orders;
     }
 
     @Override
     public Integer save(Order order) {
         int randomNum = ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE);
         Order newOrder = new Order(randomNum, order.getDate(), order.getCost(), new ArrayList<>(order.getProducts()));
-        DB.add(newOrder);
+        orders.add(newOrder);
         return randomNum;
     }
 
     @Override
     public void update(Order order) {
         if (order == null) return;
-        for (Order tempOrder : DB) {
-            int index = DB.indexOf(tempOrder);
+        for (Order tempOrder : orders) {
+            int index = orders.indexOf(tempOrder);
             if (index >= 0) {
-                DB.set(index, new Order(tempOrder.getId(),order.getDate(), order.getCost(), order.getProducts()));
+                orders.set(index, new Order(tempOrder.getId(),order.getDate(), order.getCost(), order.getProducts()));
                 return;
             }
         }
@@ -63,6 +63,6 @@ public class OrderRepositoryMem implements OrderDao {
 
     @Override
     public void delete(Order order) {
-        DB.remove(order);
+        orders.remove(order);
     }
 }
