@@ -16,12 +16,12 @@ public enum OrderQuery {
             "VALUES (?, ?)"),
 
     UPDATE_ORDER("" +
-            "UPDATE ORDER " +
+            "UPDATE PUBLIC.ORDER " +
             "SET DATE = ?, COST = ? " +
             "WHERE ID = ?"),
 
     DELETE_ORDER("" +
-            "DELETE FROM ORDER " +
+            "DELETE FROM PUBLIC.ORDER " +
             "WHERE ID = ? ");
 
     private final String value;

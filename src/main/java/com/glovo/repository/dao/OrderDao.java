@@ -11,6 +11,6 @@ public interface OrderDao {
     List<Order> getAllOrders();
     Integer save(Order order);
     void update(Order order);
-    void delete(Order order);
+    void delete(Integer id);
 
 }

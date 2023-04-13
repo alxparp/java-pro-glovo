@@ -14,7 +14,7 @@ public class Order {
 
     private Integer id;
     private LocalDate date;
-    private double cost;
+    private Double cost;
     private List<Product> products;
 
 }
