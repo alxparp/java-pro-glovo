@@ -1,6 +1,7 @@
 package com.glovo.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -8,9 +9,10 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
+@Builder
 public class Order {
 
-    private int id;
+    private Integer id;
     private LocalDate date;
     private double cost;
     private List<Product> products;
