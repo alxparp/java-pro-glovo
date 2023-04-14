@@ -7,10 +7,10 @@ import java.util.Optional;
 
 public interface ProductDao {
 
-    Optional<Product> getById(int id);
+    Optional<Product> getById(Integer id);
     List<Product> getAllProducts();
     Integer save(Product product);
     void update(Product product);
-    void delete(Product product);
+    void delete(Integer id);
 
 }

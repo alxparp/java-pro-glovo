@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/order")
+@RequestMapping("/v1/order")
 public class OrderController {
 
     private final OrderService orderService;
@@ -17,7 +17,7 @@ public class OrderController {
     }
 
     @GetMapping(path = "{id}")
-    public Order getOrderById(@PathVariable int id) {
+    public Order getOrderById(@PathVariable Integer id) {
         return orderService.getOrderById(id).orElse(null);
     }
 
@@ -29,6 +29,16 @@ public class OrderController {
     @PostMapping
     public void saveOrder(@RequestBody Order order) {
         orderService.saveOrder(order);
+    }
+
+    @PutMapping
+    public void updateOrder(@RequestBody Order order) {
+        orderService.updateOrder(order);
+    }
+
+    @DeleteMapping(path = "{id}")
+    public void deleteOrder(@PathVariable Integer id) {
+        orderService.deleteOrder(id);
     }
 
 }

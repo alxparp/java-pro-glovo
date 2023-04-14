@@ -25,7 +25,7 @@ public class OrderRepositoryMem implements OrderDao {
 
     private List<Order> orders = List.of(
             new Order(1, LocalDate.now(), 240.5, products1),
-            new Order(2, LocalDate.now(), 80, products2));
+            new Order(2, LocalDate.now(), 80.0, products2));
 
     @Override
     public Optional<Order> getById(int id) {
@@ -62,7 +62,12 @@ public class OrderRepositoryMem implements OrderDao {
     }
 
     @Override
-    public void delete(Order order) {
-        orders.remove(order);
+    public void delete(Integer id) {
+        for (Order order : orders) {
+            if (order.getId().equals(id)) {
+                orders.remove(order);
+                return;
+            }
+        }
     }
 }
