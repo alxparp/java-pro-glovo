@@ -1,4 +1,4 @@
-package com.glovo.api;
+package com.glovo.controller.api;
 
 import com.glovo.model.Product;
 import com.glovo.service.ProductService;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/product")
+@RequestMapping("/api/v1/product")
 public class ProductController {
 
     private final ProductService productService;
@@ -16,7 +16,7 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping(path = "{id}")
+    @GetMapping(path = "/{id}")
     public Product getProductById(@PathVariable Integer id) {
         return productService.getProductById(id).orElse(null);
     }
@@ -36,7 +36,7 @@ public class ProductController {
         productService.updateProduct(product);
     }
 
-    @DeleteMapping(path = "{id}")
+    @DeleteMapping(path = "/{id}")
     public void deleteProduct(@PathVariable Integer id) {
         productService.deleteProduct(id);
     }
