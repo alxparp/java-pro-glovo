@@ -28,9 +28,6 @@ public class OrderAndProductRepositoryPDB implements OrderAndProductDao {
 
     @Override
     public void save(OrderAndProduct orderAndProduct) {
-        if (Util.checkNull(orderAndProduct, orderAndProduct.getProductId(), orderAndProduct.getOrderId()))
-            throw new IllegalArgumentException("Can't save null orderAndProduct connection");
-
         try {
             jdbcTemplate.update(
                     OrderAndProductQuery.SAVE_ORDER_PRODUCT.getValue(),
@@ -44,9 +41,6 @@ public class OrderAndProductRepositoryPDB implements OrderAndProductDao {
 
     @Override
     public void save(Order order) {
-        if (Util.checkNull(order, order.getId(), order.getProducts()))
-            throw new IllegalArgumentException("Can't save null orderAndProduct connections");
-
         try {
             jdbcTemplate.batchUpdate(
                     OrderAndProductQuery.SAVE_ORDER_PRODUCT.getValue(),
@@ -69,9 +63,6 @@ public class OrderAndProductRepositoryPDB implements OrderAndProductDao {
 
     @Override
     public void delete(Order order) {
-        if (Util.checkNull(order, order.getId()))
-            throw new IllegalArgumentException("Can't delete null orderAndProduct connections");
-
         try {
             jdbcTemplate.update(OrderAndProductQuery.DELETE_ORDER_PRODUCT.getValue(), order.getId());
         } catch (DataAccessException ex) {

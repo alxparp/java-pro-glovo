@@ -52,7 +52,7 @@ public class OrderRepositoryPDB implements OrderDao {
                 OrderQuery.GET_ALL_ORDERS.getValue(),
                 new OrderRowMapper());
 
-        for (Order order: orders) {
+        for (Order order : orders) {
             order.setProducts(jdbcTemplate.query(ProductQuery.GET_PRODUCT_BY_ORDER.getValue(), new ProductRowMapper(), order.getId()));
         }
         return orders;
@@ -60,48 +60,23 @@ public class OrderRepositoryPDB implements OrderDao {
 
     @Override
     public Integer save(Order order) {
-        if (Util.checkNull(order, order.getDate(), order.getCost()))
-            throw new IllegalArgumentException("Can't save null order");
-
-        try {
-            KeyHolder keyHolder = new GeneratedKeyHolder();
-            jdbcTemplate.update(connection -> {
-                PreparedStatement ps = connection.prepareStatement(OrderQuery.SAVE_ORDERS.getValue(), Statement.RETURN_GENERATED_KEYS);
-                ps.setDate(1, Date.valueOf(order.getDate()));
-                ps.setDouble(2, order.getCost());
-                return ps;
-            }, keyHolder);
-            return (Integer) keyHolder.getKeys().get("id");
-
-        } catch (DataAccessException ex) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Make sure all order data is spelled correctly", ex);
-        }
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(OrderQuery.SAVE_ORDERS.getValue(), Statement.RETURN_GENERATED_KEYS);
+            ps.setDate(1, Date.valueOf(order.getDate()));
+            ps.setDouble(2, order.getCost());
+            return ps;
+        }, keyHolder);
+        return (Integer) keyHolder.getKeys().get("id");
     }
 
     @Override
     public void update(Order order) {
-        if (Util.checkNull(order, order.getDate(), order.getCost(), order.getId()))
-            throw new IllegalArgumentException("Can't update null order");
-
-        try {
-            jdbcTemplate.update(OrderQuery.UPDATE_ORDER.getValue(), order.getDate(), order.getCost(), order.getId());
-        } catch (DataAccessException ex) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Make sure all order data is spelled correctly", ex);
-        }
+        jdbcTemplate.update(OrderQuery.UPDATE_ORDER.getValue(), order.getDate(), order.getCost(), order.getId());
     }
 
     @Override
     public void delete(Integer id) {
-        if (Util.checkNull(id))
-            throw new IllegalArgumentException("Can't delete null order id");
-
-        try {
-            jdbcTemplate.update(OrderQuery.DELETE_ORDER.getValue(), id);
-        } catch (DataAccessException ex) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Can't delete order, check if id is correct", ex);
-        }
+        jdbcTemplate.update(OrderQuery.DELETE_ORDER.getValue(), id);
     }
 }

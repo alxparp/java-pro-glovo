@@ -5,6 +5,7 @@ import com.glovo.model.OrderAndProduct;
 import com.glovo.model.Product;
 import com.glovo.repository.dao.OrderAndProductDao;
 import com.glovo.repository.dao.OrderDao;
+import com.glovo.utils.Util;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -17,14 +18,14 @@ import java.util.Optional;
 public class OrderService {
 
     private final OrderDao orderDao;
-    private final OrderAndProductDao orderAndProductDao;
+    private final OrderAndProductService orderAndProductService;
     private final TransactionTemplate transactionTemplate;
 
     public OrderService(@Qualifier("orderRepoPDB") OrderDao orderDao,
-                        OrderAndProductDao orderAndProductDao,
+                        OrderAndProductService orderAndProductService,
                         PlatformTransactionManager transactionManager) {
         this.orderDao = orderDao;
-        this.orderAndProductDao = orderAndProductDao;
+        this.orderAndProductService = orderAndProductService;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
     }
 
@@ -37,26 +38,36 @@ public class OrderService {
     }
 
     public void saveOrder(Order order) {
+        if (Util.checkNull(order, order.getDate(), order.getCost()))
+            throw new IllegalArgumentException("Can't save null order");
+
+
         transactionTemplate.executeWithoutResult(action -> {
             Integer orderId = orderDao.save(order);
 
             for (Product product : order.getProducts()) {
                 if (product.getId() != null) {
-                    orderAndProductDao.save(new OrderAndProduct(orderId, product.getId()));
+                    orderAndProductService.save(new OrderAndProduct(orderId, product.getId()));
                 }
             }
         });
     }
 
     public void updateOrder(Order order) {
+        if (Util.checkNull(order, order.getDate(), order.getCost(), order.getId()))
+            throw new IllegalArgumentException("Can't update null order");
+
         transactionTemplate.executeWithoutResult(action -> {
             orderDao.update(order);
-            orderAndProductDao.delete(order);
-            orderAndProductDao.save(order);
+            orderAndProductService.delete(order);
+            orderAndProductService.save(order);
         });
     }
 
     public void deleteOrder(Integer id) {
+        if (Util.checkNull(id))
+            throw new IllegalArgumentException("Can't delete null order id");
+
         orderDao.delete(id);
     }
 

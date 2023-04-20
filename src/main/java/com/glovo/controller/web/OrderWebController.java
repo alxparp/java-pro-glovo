@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/web/v1/orders")
+@RequestMapping("/v1/orders")
 public class OrderWebController {
 
     private final OrderService orderService;

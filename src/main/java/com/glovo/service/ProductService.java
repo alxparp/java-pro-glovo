@@ -26,14 +26,20 @@ public class ProductService {
     }
 
     public void saveProduct(Product product) {
+        if (Util.checkNull(product, product.getName(), product.getCost()))
+            throw new IllegalArgumentException("Can't save null product");
         productDao.save(product);
     }
 
     public void updateProduct(Product product) {
+        if (Util.checkNull(product, product.getName(), product.getCost(), product.getId()))
+            throw new IllegalArgumentException("Can't update null product");
         productDao.update(product);
     }
 
     public void deleteProduct(Integer id) {
+        if (Util.checkNull(id))
+            throw new IllegalArgumentException("Can't delete null product");
         productDao.delete(id);
     }
 

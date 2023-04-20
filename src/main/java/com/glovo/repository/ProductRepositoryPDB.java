@@ -45,46 +45,23 @@ public class ProductRepositoryPDB implements ProductDao {
 
     @Override
     public Integer save(Product product) {
-        if (Util.checkNull(product, product.getName(), product.getCost()))
-            throw new IllegalArgumentException("Can't save null product");
-
-        try {
-            KeyHolder keyHolder = new GeneratedKeyHolder();
-            jdbcTemplate.update(connection -> {
-                PreparedStatement ps = connection.prepareStatement(ProductQuery.SAVE_PRODUCT.getValue(), Statement.RETURN_GENERATED_KEYS);
-                ps.setString(1, product.getName());
-                ps.setDouble(2, product.getCost());
-                return ps;
-            }, keyHolder);
-            return (Integer) keyHolder.getKeys().get("id");
-        } catch (DataAccessException ex) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Make sure all product data is spelled correctly", ex);
-        }
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(ProductQuery.SAVE_PRODUCT.getValue(), Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, product.getName());
+            ps.setDouble(2, product.getCost());
+            return ps;
+        }, keyHolder);
+        return (Integer) keyHolder.getKeys().get("id");
     }
 
     @Override
     public void update(Product product) {
-        if (Util.checkNull(product, product.getName(), product.getCost(), product.getId()))
-            throw new IllegalArgumentException("Can't update null product");
-
-        try {
-            jdbcTemplate.update(ProductQuery.UPDATE_PRODUCT.getValue(), product.getName(), product.getCost(), product.getId());
-        } catch (DataAccessException ex) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Make sure all product data is spelled correctly", ex);
-        }
+        jdbcTemplate.update(ProductQuery.UPDATE_PRODUCT.getValue(), product.getName(), product.getCost(), product.getId());
     }
 
     @Override
     public void delete(Integer id) {
-        if (Util.checkNull(id)) throw new IllegalArgumentException("Can't update null product");
-
-        try {
-            jdbcTemplate.update(ProductQuery.DELETE_PRODUCT.getValue(), id);
-        } catch (DataAccessException ex) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Can't delete product, check if id is correct", ex);
-        }
+        jdbcTemplate.update(ProductQuery.DELETE_PRODUCT.getValue(), id);
     }
 }

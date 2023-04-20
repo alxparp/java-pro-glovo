@@ -1,6 +1,7 @@
-package com.glovo.controller.api;
+package com.glovo.controller.rest;
 
 import com.glovo.exception.GlovoDaoException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,15 +16,22 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({ IllegalArgumentException.class })
     protected ResponseEntity<Object> handleIllegalArgument(
             Exception ex, WebRequest request) {
-        return handleExceptionInternal(ex, "Can't save empty object",
+        return handleExceptionInternal(ex, ex.getMessage(),
                 new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler({ GlovoDaoException.class })
     protected ResponseEntity<Object> handleGlovoDao(
             Exception ex, WebRequest request) {
-        return handleExceptionInternal(ex, "Internal error",
+        return handleExceptionInternal(ex, ex.getMessage(),
                 new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
+    @ExceptionHandler({DataAccessException.class })
+    protected ResponseEntity<Object> handleDataAccess(
+            Exception ex, WebRequest request) {
+        return handleExceptionInternal(ex, "Make sure all data is spelled correctly",
+                new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
 }

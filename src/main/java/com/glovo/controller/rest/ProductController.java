@@ -1,4 +1,4 @@
-package com.glovo.controller.api;
+package com.glovo.controller.rest;
 
 import com.glovo.model.Product;
 import com.glovo.service.ProductService;
